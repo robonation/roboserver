@@ -1,0 +1,326 @@
+2018-12-14 08:59:28.851011 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 08:59:38.801602 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at GRB.
+2018-12-14 09:00:04.782508 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:00:14.797265 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at GRB.
+2018-12-14 09:02:12.778238 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:29:22.405833 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 09:35:52.030701 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:37:07.023201 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at 0.
+2018-12-14 09:38:04.046820 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:38:14.026812 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at GRG.
+2018-12-14 09:38:39.017109 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:38:49.033085 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at GRG.
+2018-12-14 09:40:09.738620 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 09:41:46.074634 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:43:02.097137 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at GRG.
+2018-12-14 09:44:38.074622 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:47:34.103181 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at 0.
+2018-12-14 09:52:01.132218 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:52:11.115166 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BGR.
+2018-12-14 09:52:35.160797 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:52:45.130486 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BGR.
+2018-12-14 09:54:31.618924 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 09:54:48.077784 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:56:23.157124 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BGR.
+2018-12-14 09:57:01.176093 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:57:33.173953 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BGR.
+2018-12-14 09:59:11.178232 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:59:21.190708 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at BRG.
+2018-12-14 09:59:47.189002 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 09:59:57.181340 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at BRG.
+2018-12-14 10:01:24.801317 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 10:02:53.203148 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:03:03.176594 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at BRG.
+2018-12-14 10:03:22.196378 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:37:04.486243 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:37:25.556370 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 10:44:20.609936 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:44:30.610555 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 10:45:00.599546 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:45:10.609922 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 10:46:56.826756 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 10:49:08.634241 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:51:51.642454 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at BRG.
+2018-12-14 10:54:04.659350 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:54:05.667152 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 1 active.
+Field B Light buoy at BRG.
+2018-12-14 10:55:05.663483 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:55:15.671965 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 10:55:43.689871 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 10:55:53.671058 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 10:57:44.557013 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 11:02:38.809195 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:03:08.760274 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 11:03:32.729075 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:04:49.733713 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 11:06:32.667414 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:06:47.669531 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:08:27.679229 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:08:39.681047 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:08:55.683251 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:09:08.683743 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:15:44.723694 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:16:57.731341 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:18:12.739246 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:18:30.740439 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:25:05.868092 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:25:15.853180 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 11:25:43.846258 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:25:53.830102 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 11:27:44.321315 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 11:32:43.895620 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:36:19.915986 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 11:40:25.947032 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:40:35.937479 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 11:41:02.933997 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 11:41:12.968959 HST-1000
+GATR vehi2018-12-14 14:20:45.537271 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:34:24.518447 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:34:33.522824 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:35:41.595304 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 14:35:52.603839 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:36:31.582505 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 14:42:19.633378 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:42:20.635657 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 14:44:05.667416 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:44:15.708851 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 14:44:42.623253 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:44:52.641810 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 14:49:02.669845 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:49:12.681952 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 14:49:38.666618 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:49:48.675284 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 14:51:25.955198 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 14:54:15.693092 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:56:23.722099 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 14:58:15.719213 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:58:25.726616 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 14:58:56.722395 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 14:59:06.715854 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 15:00:36.046394 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 15:02:19.729510 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:03:32.753870 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 15:10:03.781574 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:10:13.785490 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 15:10:35.787530 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:10:45.806620 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 2 active.
+Field B Light buoy at BRG.
+2018-12-14 15:12:09.301742 HST-1000
+GATR reports Scan the code pattern RGB.
+2018-12-14 15:26:44.896198 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:26:54.883141 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 15:27:23.883660 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:27:33.529711 HST-1000
+GATR reports
+Active entrance gate: 2
+Active exit gate: 2
+Light buoy active: N
+2018-12-14 15:27:33.892279 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 3 active.
+Field B Light buoy at BRG.
+2018-12-14 15:31:06.905149 HST-1000
+GATR vehicle is in manual mode. run ended.
+2018-12-14 15:31:16.909253 HST-1000
+GATR vehicle is autonomous. Run started.
+Field B pinger 0 active.
+Field B Light buoy at BRG.
+2018-12-14 15:31:32.857326 HST-1000
+GATR vehicle is in manual mode. run ended.
