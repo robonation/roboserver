@@ -1,23 +1,22 @@
 import os
 import operator
 import socket
-import random
 import re
 import SocketServer
-import sys
 import threading
 import time
 import pytz
+import errno
 from datetime import datetime, date
 
 local_tz = pytz.timezone('Pacific/Honolulu')
 
 def utc_to_local(utc_dt):
-    local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(local_tz)
-    return local_tz.normalize(local_dt)
+	local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(local_tz)
+	return local_tz.normalize(local_dt)
 
 def aslocaltimestr(utc_dt):
-    return utc_to_local(utc_dt).strftime('%Y-%m-%d %H:%M:%S.%f %Z%z')
+	return utc_to_local(utc_dt).strftime('%Y-%m-%d %H:%M:%S.%f %Z%z')
 
 #LOGS_PATH may need to change depending on where you are running this file from
 LOGS_PATH = '../LOGS/'
@@ -429,4 +428,3 @@ if __name__ == '__main__':
 			time.sleep(0.2)
 		except:
 			break
-
