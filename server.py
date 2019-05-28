@@ -200,8 +200,6 @@ class Team():
 					print 'no story log file created.'
 		self.mode = message[7]
 
-	#$RXHRB,161229,104523,37.267458,N,12.376548,W,AUVSI,2,3*36
-
 	#Gate message parsing and story log
 	def GAT(self, message, file):
 		self.date = message[0]
@@ -319,7 +317,6 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
 			except ValueError:
 				self.wfile.write(nmea.formatSentence("TDERR,{},{},Invalid Checksum").format(datetime.now().strftime("%m%d%y,%H%M%S"), message['sentence_id']))
 				self.wfile.flush()
-				print nmea.formatSentence("TDERR,{},{},Invalid Checksum").format(datetime.now().strftime("%m%d%y,%H%M%S"), message['sentence_id'])
 				break
 			except:
 				print 'Team '+team.name+' disconnected.'
