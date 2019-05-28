@@ -165,6 +165,7 @@ class Team():
 	DOKshape = ''
 	DELcolor = ''
 	DELshape = ''
+
 	#Heartbeat message parsing and story log
 	def HRB(self, message, file):
 		self.hbdate = message[0]
