@@ -2,16 +2,28 @@
 
 from setuptools import setup, find_packages
 
-setup(name='RoboServer',
+install_require = [
+	'pycodestyle',
+	'pytz',
+]
+
+tests_require = [
+	'nose',
+	'pytest',
+]
+
+setup(name='roboserver',
 	  version='1.0',
 	  description='Competition server used for RobotX, RoboBoat and more.',
 	  author='Bill Porter, Felix Pageau',
-	  author_email='bill.porter@robotx.org, pageau@robonation.org',
+	  author_email='william.porter@robotx.org, pageau@robonation.org',
 	  license='Apache License 2.0',
 	  url='https://github.com/robonation/roboserver',
-	  install_requires=['pycodestyle'],
+	  install_requires=install_require,
+	  tests_require=tests_require,
+	  test_suite='nose.collector',
 	  python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*",
-	  packages=find_packages(),
+	  packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
 	  classifiers=[
 		"Development Status :: 4 - Beta",
 		"Intended Audience :: Science/Research",
