@@ -1,5 +1,11 @@
 .DS_Store
+.eggs/
 .pydevproject
 .project
+.settings/
+*.pyc
+build/
 dist/
+logs/
+wwwroot/
 RoboServer.egg-info/
