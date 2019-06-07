@@ -49,6 +49,24 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(nmea.parseNMEA(nmea_str)['data'][5], 'W')
         self.assertEqual(nmea.parseNMEA(nmea_str)['data'][6], 'AUVSI')
         self.assertEqual(nmea.parseNMEA(nmea_str)['data'][7], '2')
+    
+    def test_parseNMEA_noChecksum(self):
+        nmea_str = '$RBHRB,101218,161229,21.31198,N,157.88972,W,AUVSI,2'
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['talker'], 'RB')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['sentence_type'], 'HRB')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][0], '101218')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][1], '161229')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][2], '21.31198')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][3], 'N')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][4], '157.88972')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][5], 'W')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][6], 'AUVSI')
+        self.assertEqual(nmea.parseNMEA(nmea_str, False)['data'][7], '2')
+        
+    def test_parseNMEA_noChecksum_strict(self):
+        nmea_str = '$RBHRB,101218,161229,21.31198,N,157.88972,W,AUVSI,2'
+        with self.assertRaises(ValueError):
+            nmea.parseNMEA(nmea_str, True)
 
     def test_parseNMEA_one_data(self):
         nmea_str = '$RBHRB,Test*52'
