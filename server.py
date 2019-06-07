@@ -1,12 +1,14 @@
+#!/usr/bin/env python
+
 import os
-import operator
 import socket
-import re
 import SocketServer
 import threading
 import time
 import pytz
 import errno
+import sys
+from serv import nmea
 from datetime import datetime, date
 
 local_tz = pytz.timezone('Pacific/Honolulu')
@@ -19,12 +21,12 @@ def aslocaltimestr(utc_dt):
 	return utc_to_local(utc_dt).strftime('%Y-%m-%d %H:%M:%S.%f %Z%z')
 
 #LOGS_PATH may need to change depending on where you are running this file from
-LOGS_PATH = '../LOGS/'
+LOGS_PATH = 'logs/'
 BUOY_IP = '192.168.1.11'
 BUOY_PORT = 4000
 PING_IP = '192.168.1.6'
 PING_PORT = 4000
-WEB_PATH = '/var/www/html/'
+WEB_PATH = 'wwwroot/'
 
 HTML_HEADER = '<head><title>RobotX 2018</title><meta http-equiv="refresh" content="5" ></head>'
 
@@ -68,7 +70,7 @@ def PINGlistener():
 			try:
 				response = sock.recv(1024)
 				#print response, 'received from', addr
-				message = readNMEA(response)
+				message = nmea.parseNMEA(response)
 				# update the field docs with buoy and pinger info.
 				name = message['sentence_type']
 				if name == 'PNS':
@@ -114,7 +116,7 @@ def BUOYlistener():
 		while buoy.Connected:
 			try:
 				response = sock.recv(1024)
-				message = readNMEA(response)
+				message = nmea.parseNMEA(response)
 				name = message['sentence_type']
 				if name == 'BYS':
 					buoy.Field = message['data'][0]
@@ -140,40 +142,7 @@ def BUOYlistener():
 				sock.close()
 				buoy.Connected = False
 
-def calcchecksum(nmea_str):
-	# this returns a 2 digit hexadecimal string to use as a checksum.
-	sum = hex(reduce(operator.xor, map(ord, nmea_str), 0))[2:].upper()
-	if len(sum) == 2:
-		return sum
-	else:
-		return '0' + sum
 
-def readNMEA(nmea_str):
-	# parse NMEA string into dict of fields.
-	# the data will be split by commas and accessible by index.
-	NMEApattern = re.compile('''
-		^[^$]*\$?
-		(?P<nmea_str>
-			(?P<talker>\w{2})
-			(?P<sentence_type>\w{3}),
-			(?P<data>[^*]+)
-		)(?:\\*(?P<checksum>[A-F0-9]{2}))
-		[\\\r\\\n]*
-		''', re.X | re.IGNORECASE)
-	match = NMEApattern.match(nmea_str)
-	if not match:
-		raise ValueError('Could not parse data:', nmea_str)
-	nmea_dict = {}
-	nmea_str = match.group('nmea_str')
-	nmea_dict['talker'] = match.group('talker').upper()
-	nmea_dict['sentence_type'] = match.group('sentence_type').upper()
-	nmea_dict['data'] = match.group('data').split(',')
-	checksum = match.group('checksum')
-	# check the checksum to ensure matching data.
-	if checksum != calcchecksum(nmea_str):
-		raise ValueError('Checksum does not match: %s != %s.' %
-			(checksum, calcchecksum(nmea_str)))
-	return nmea_dict
 
 #The following object holds all information for a team's run
 class Team():
@@ -187,7 +156,6 @@ class Team():
 	lon = 0.0
 	EW = 'E'
 	mode = '1'
-	status = '1'
 	entrance = '0'
 	exit = '0'
 	LBactive = 'N'
@@ -197,6 +165,7 @@ class Team():
 	DOKshape = ''
 	DELcolor = ''
 	DELshape = ''
+
 	#Heartbeat message parsing and story log
 	def HRB(self, message, file):
 		self.hbdate = message[0]
@@ -230,9 +199,6 @@ class Team():
 				except:
 					print 'no story log file created.'
 		self.mode = message[7]
-		self.status = message[8]
-		
-		
 
 	#Gate message parsing and story log
 	def GAT(self, message, file):
@@ -336,7 +302,7 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
 		team = Team()
 		#read in the first message to get team name
 		self.data = self.rfile.readline().strip()
-		message = readNMEA(self.data)
+		message = nmea.parseNMEA(self.data)
 		getattr(team, message['sentence_type'])(message['data'], 0)
 		print 'Team '+team.name+' connected.'
 		#create human readable 'story log' and raw log for team.
@@ -347,7 +313,11 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
 			# which should be the entire message.
 			try:
 				self.data = self.rfile.readline().strip()
-				message = readNMEA(self.data)
+				message = nmea.parseNMEA(self.data)
+			except ValueError:
+				self.wfile.write(nmea.formatSentence("TDERR,{},{},Invalid Checksum").format(datetime.now().strftime("%m%d%y,%H%M%S"), message['sentence_id']))
+				self.wfile.flush()
+				break
 			except:
 				print 'Team '+team.name+' disconnected.'
 				STORY_LOG.close()
@@ -372,6 +342,7 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
 					getattr(team, message['sentence_type'])(message['data'], STORY_LOG)
 					name = team.name
 				except:
+					print "*** Received invalid sentence: " + message['sentence_type']
 					name = 'errors'
 				#write out to raw log file
 				try:
@@ -394,15 +365,21 @@ class MyTCPHandler(SocketServer.StreamRequestHandler):
 				raise ValueError('Invalid talker, got', message['talker'])
 			
 
-
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer): pass
 
-if __name__ == '__main__':
+# Main method to run the RoboServer	
+def main():
 	# if today's folder hasn't been created, create it
 	try:
-		os.mkdir(LOGS_PATH+str(date.today()))
+		log_dir = LOGS_PATH+str(date.today())
+		if os.path.isdir(log_dir) == False:
+			os.makedirs(log_dir)
+			print "created: ", log_dir
+		else:
+			print "directory: ",  log_dir
 	except:
-		pass
+		print("Oops!",sys.exc_info()[0],"occured.")
+		#pass
 	# start the threads to listen to the boats.
 	# this breaks off another thread for each TCP connection.
 	HOST, PORT = '', 9000
@@ -422,6 +399,11 @@ if __name__ == '__main__':
 	BUOYlisten_thread = threading.Thread(target = BUOYlistener)
 	BUOYlisten_thread.daemon = True
 	BUOYlisten_thread.start()
+
+
+if __name__ == '__main__':
+	
+	main()
 
 	while True:
 		try:
