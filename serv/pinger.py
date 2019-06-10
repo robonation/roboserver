@@ -1,10 +1,12 @@
 import socket
 import os
-import nmea
+from nmeaserver import formatter
 import time
 from datetime import datetime, date
 
-#global pinger object 'ping' holds pinger state
+# global pinger object 'ping' holds pinger state
+
+
 class Pinger():
     Field = 'None'
     Active = 0
@@ -12,12 +14,12 @@ class Pinger():
     Voltage = 0
     Time = None
     Connected = False
-    
+
     pinger_ip = None
     pinger_port = None
     log_path = None
     timeutil = None
-    
+
     def __init__(self, ip, port, log_path, timeutil):
         self.pinger_ip = ip
         self.pinger_port = port
@@ -28,49 +30,53 @@ class Pinger():
     # connect to pinger via TCP
     def PINGlistener(self):
         while True:
-            #try to connect to the pinger box
+            # try to connect to the pinger box
             while not self.Connected:
                 try:
-                    #create a new socket and try to connect
+                    # create a new socket and try to connect
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.connect((self.pinger_ip, self.pinger_port))
                     print('Pinger TCP connected')
                     self.Connected = True
-                except:
+                except BaseException:
                     # if it doesn't work, try again in two seconds
                     time.sleep(2)
-            #once we are connected to the pingers:
+            # once we are connected to the pingers:
             while self.Connected:
                 try:
                     response = sock.recv(1024)
-                    #print response, 'received from', addr
-                    message = nmea.parseNMEA(response)
+                    # print response, 'received from', addr
+                    message = formatter.parse(response)
                     # update the field docs with buoy and pinger info.
                     name = message['sentence_type']
                     if name == 'PNS':
                         self.Field = message['data'][0]
-                        #print 'Field:', self.Field
+                        # print 'Field:', self.Field
                         self.Active = message['data'][1]
-                        #print 'Active pinger:', self.Active
+                        # print 'Active pinger:', self.Active
                         self.Sync = message['data'][2]
-                        #print 'Pinger Sync Mode:', self.Sync
-                        self.Voltage = float(message['data'][3])/1000
-                        #print 'Pinger voltage:', self.Voltage
-                        self.Time = self.timeutil.aslocaltimestr(datetime.utcnow())
-                        #print 'Time:', str(self.Time)
-                        folder = 'Field_'+str(message['data'][0])
-    
+                        # print 'Pinger Sync Mode:', self.Sync
+                        self.Voltage = float(message['data'][3]) / 1000
+                        # print 'Pinger voltage:', self.Voltage
+                        self.Time = self.timeutil.aslocaltimestr(
+                            datetime.utcnow())
+                        # print 'Time:', str(self.Time)
+                        folder = 'Field_' + str(message['data'][0])
+
                     else:
                         name = 'PINGlog'
                         folder = 'ERRORS'
-                    # store NMEA messages in log files.
+
+                    log_folder = self.logs_path + \
+                        str(date.today()) + '/' + folder
+                    log_file = log_folder + '/' + name + '.txt'                    
                     try:
-                        with open(self.log_path + str(date.today())+'/'+folder+'/'+name+'.txt', 'a') as f:
-                            f.write(str(self.Time)+' | '+response)
-                    except:
-                        os.mkdir(self.log_path + str(date.today())+'/'+folder)
-                        with open(self.log_path + str(date.today())+'/'+folder+'/'+name+'.txt', 'a') as f:
-                            f.write(str(self.Time)+' | '+response)
-                except:
+                        with open(log_file, 'a') as f:
+                            f.write(str(self.Time) + ' | ' + response)
+                    except BaseException:
+                        os.mkdir(log_folder)
+                        with open(log_file, 'a') as f:
+                            f.write(str(self.Time) + ' | ' + response)
+                except BaseException:
                     print('Pinger TCP disconnected')
                     sock.close()
