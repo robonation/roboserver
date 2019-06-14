@@ -19,3 +19,7 @@ Running tests
 A basic set of integration tests can be run by typing:
     python setup.py test
 tests require the server to be running
+
+Accessing logs
+------------------
+The web logs are now available through an integrated web server. To see the web log, visit [localhost:5000](localhost:5000)
