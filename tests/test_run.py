@@ -87,4 +87,5 @@ class TestRun(TestCase):
     @classmethod
     def tearDownClass(cls):
         TestCase.tearDownClass()
-        cls.SERV.join()
+        cls.SERV = None
+

@@ -35,15 +35,15 @@ class SevenSeg(threading.Thread):
 
     def run(self):
         logger.info("SevenSeglistener connecting to {}:{}".format( \
-            self.buoy_ip, self.buoy_port))
+            self.sevenseg_ip, self.sevenseg_port))
         while not self.shutdown_flag:
             if not self.Connected:
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     sock.settimeout(1)
-                    sock.connect((self.buoy_ip, self.buoy_port))
+                    sock.connect((self.sevenseg_port, self.sevenseg_port))
                     self.Connected = True
-                    logger.info('Buoy TCP connected.')
+                    logger.info('SevenSeg TCP connected.')
                 except BaseException:
                     time.sleep(2)
             else:
@@ -54,11 +54,8 @@ class SevenSeg(threading.Thread):
                     name = message['sentence_type']
                     if name == 'SSS':
                         self.Field = message['data'][0]
-                        # print 'Field:', self.Field
                         self.State = message['data'][1]
-                        # print 'Buoy state:', self.State
                         self.Voltage = float(message['data'][2]) / 1000
-                        # print 'Buoy voltage:', self.Voltage
                         self.Time = self.timeutil.rn_timestamp()
                         folder = 'Field_' + str(message['data'][0])
                     else:
