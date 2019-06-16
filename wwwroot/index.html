@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{{ competition }} dashboard</title>
+    </head>
+    <body>
+        <h1>{{ competition }} dashboard</h1>
+        <ul>
+            {% for dir in dirs %}
+	        <li><a href='team/{{ dir }}/'>{{ dir }}</a>
+	        {% endfor %}
+        </ul>
+    </body>
+</html>

@@ -3,11 +3,15 @@ import os
 from nmeaserver import formatter
 import time
 from datetime import datetime, date
+import threading
+import logging
+import signal
+
+logger = logging.getLogger(__name__)
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 # global buoy object 'buoy' holds light buoy state
-
-
-class Buoy():
+class Buoy(threading.Thread):
     Field = 'None'
     State = '0'
     Voltage = 0
@@ -16,30 +20,34 @@ class Buoy():
     
     #: Whether this NMEAServer is being shutdown.
     shutdown_flag = False
-
     buoy_ip = None
     buoy_port = None
     logs_path = None
     timeutil = None
 
-    def __init__(self, ip, port, logs_path, timeutil):
+    def __init__(self, ip, port, logs_path, timeutil, name="Buoy", daemon=True):
         self.buoy_ip = ip
         self.buoy_port = port
         self.logs_path = logs_path
         self.timeutil = timeutil
         self.Time = timeutil.aslocaltimestr(datetime.utcnow())
+        threading.Thread.__init__(self, name=name)
+        self.setDaemon(daemon)
 
-    def BUOYlistener(self):
+    def run(self):
+        logger.info("BUOYlistener connecting to {}:{}".format( \
+            self.buoy_ip, self.buoy_port))
         while not self.shutdown_flag:
-            while not self.Connected:
+            if not self.Connected:
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    sock.settimeout(1)
                     sock.connect((self.buoy_ip, self.buoy_port))
                     self.Connected = True
-                    print 'Buoy TCP connected.'
+                    logger.info('Buoy TCP connected.')
                 except BaseException:
                     time.sleep(2)
-            while self.Connected:
+            else:
                 try:
                     response = sock.recv(1024)
                     message = formatter.parse(response)
@@ -68,6 +76,11 @@ class Buoy():
                         with open(log_file, 'a') as f:
                             f.write(str(self.Time) + ' | ' + response)
                 except BaseException:
-                    print('Buoy TCP disconnected')
+                    logger.info('Buoy TCP disconnected')
                     sock.close()
                     self.Connected = False
+        logger.info("BUOYlistener done")
+
+    def shutdown(self):
+        self.shutdown_flag = True
+        self.join(3)
