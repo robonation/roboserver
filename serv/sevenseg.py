@@ -48,7 +48,6 @@ class SevenSeg(threading.Thread):
                     time.sleep(2)
             else:
                 try:
-                    sock.send(formatter.format("RXSTA,A"))
                     response = sock.recv(1024)
                     message = formatter.parse(response)
                     name = message['sentence_type']
