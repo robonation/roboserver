@@ -114,7 +114,6 @@ class Team():
         except BaseException:
             logger.error('no story log file created.')
 
-
 @nmeaserver.context_creator()
 def onConnectionEstablished(context):
     logger.info("Connection established")
@@ -267,7 +266,7 @@ def main():
     nmeaserver.start() #starts the nmeaserver
     ping.start()
     sevenseg.start()
-    app.run() #starts the webserver
+    app.run(use_reloader=False, host='0.0.0.0') #starts the webserver
 
 
 def signal_handler(sig, frame):
