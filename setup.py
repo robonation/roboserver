@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from setuptools import setup, find_packages
 
 install_require = [
     'flask',
-    'nmeaserver',
+    'nmeaserver>=0.1.9',
     'pycodestyle',
     'pytz',
 ]
