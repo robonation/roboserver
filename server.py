@@ -11,6 +11,7 @@ from flask import Flask, render_template, send_from_directory
 from nmeaserver import server, formatter
 from serv import timeutil, pinger, buoy, sevenseg
 from datetime import date
+import traceback
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(name)s - %(message)s')
 logger = logging.getLogger("roboserver")
@@ -27,7 +28,7 @@ timeutil = timeutil.TimeUtil(pytz.timezone('US/Eastern'))
 ping = pinger.Pinger('192.168.1.6', 4000, LOGS_PATH, timeutil, 'pinger')
 sevenseg = sevenseg.SevenSeg('192.168.1.7', 9000, LOGS_PATH, timeutil, 'sevenseg')
 #buoy = buoy.Buoy('192.168.1.11', 4000, LOGS_PATH, timeutil, 'buoy')
-nmeaserver = server.NMEAServer('', 9000)
+nmeaserver = server.NMEAServer('', 9000, error_sentence_id="TDERR")
 app = Flask(__name__, static_folder=WEB_PATH, template_folder=WEB_PATH)
 shutdown_flag = False
 
@@ -56,7 +57,6 @@ class Team():
         self.NS = message[3]
         self.lon = message[4]
         self.EW = message[5]
-        self.name = message[6]
         # write out to story log on mode change
         if self.mode != message[7]:
             if message[7] == '2':
@@ -86,7 +86,6 @@ class Team():
     def FLG(self, message, logfile):
         self.date = message[0]
         self.time = message[1]
-        self.name = message[2]
         self.flag = message[3]
         self.print_log(
             'reports Raise The Flag number: ' +
@@ -98,7 +97,6 @@ class Team():
     def DOK(self, message, logfile):
         self.date = message[0]
         self.time = message[1]
-        self.name = message[2]
         self.dock = message[3]
         self.print_log(
             'reports Automated Docking in: ' +
@@ -127,12 +125,13 @@ def onEveryMessageBeforeHandler(context, raw_message):
 
     if team.name is None:
         message = formatter.parse(raw_message, False)
-        
-        if message['sentence'] == 'RBHRB':
+
+        if message['sentence_id'] == 'RBHRB':
             team.name = message['data'][6]
         elif message['sentence'] == 'RBDOK' or message['sentence'] == 'RBFLG':
             team.name = message['data'][2]
         else:
+            logger.debug("Received unknown sentence_id in onEveryMessageBeforeHandler()")
             return raw_message
             
         log_folder = LOGS_PATH + str(date.today()) + '/' + team.name
@@ -159,7 +158,7 @@ def onEveryMessageBeforeHandler(context, raw_message):
 def onEveryMessageAfterHandler(context, message, response):
     team = context['team']
 
-    html_path = WEB_PATH + team.name + '/index.html'
+    html_path = WEB_PATH + str(team.name) + '/index.html'
     if not os.path.exists(os.path.dirname(html_path)):
         try:
             os.makedirs(os.path.dirname(html_path))
@@ -173,7 +172,7 @@ def onEveryMessageAfterHandler(context, message, response):
         " Docking\" reported: {}<br /> Last \"Raise The Flag\" reported: {}" + \
         "<br /> Last raw message: {}".format(
             HTML_HEADER,
-            team.name,
+            str(team.name),
             team.hbtime,
             team.dock,
             team.flag,
@@ -202,25 +201,11 @@ def raise_the_flag_handler(context, message):
     return formatter.format("TDFLG,{},Success".format(timeutil.rn_timestamp()))
 
 
-@nmeaserver.bad_checksum()
-def bad_checksum(context, raw_message):
-    sentence = formatter.format(raw_message[:raw_message.find('*')])
-    parsed = formatter.parse(sentence)
-    valid_checksum = formatter.calc_checksum(sentence)
-    return formatter.format("TDERR,{},{},Invalid Checksum. Valid one was: {}").format(
-        timeutil.nmea_timestamp(), parsed['sentence_id'], valid_checksum)
-
-
-@nmeaserver.unknown_message()
-def unknown_message(context, message):
-    logger.info("Receiving unknown message::: {}".format(message))
-
-    return formatter.format("TDERR,{},{},Invalid MessageID received. Valid" \
-                            " ones are: RBFLG, RBDOK & RBHRB").format( \
-                            timeutil.nmea_timestamp(), message['sentence_id'])
-
 @nmeaserver.error()
 def error(context, err):
+    if not isinstance(err, EOFError):
+        logger.error("**** Error: {}".format(str(err)))
+    
     team = context['team']
     logger.info('Team {} disconnected.'.format(team.name))
     context['logfile'].close()
