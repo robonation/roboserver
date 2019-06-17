@@ -28,16 +28,19 @@ python setup.py test
 
 Accessing logs
 ------------------
-The web logs are now available through an integrated web server. To see the web log, visit [localhost:5000](localhost:5000)
+The web logs are now available through an integrated web server. To see the web log, visit [localhost:5000](http://localhost:5000)
 
 
 How the code is structured
 ------------------
 ```
-- setup.py: The python setuptools script that describes the projects, define dependencies, etc
-- server.py: The main script for roboserver
-- serv/buoy.py: The class connecting to a RobotX buoy for status
-- serv/pinger.py: The class connecting to the shared RoboBoat/RoboSub/RobotX pinger for status
-- serv/sevenseg.py: The class connecting to a RobotX buoy for status
-- serv/timeutil.py: A set of time-related utility functions
+roboserver
+│   setup.py: The python setuptools script that describes the projects, define dependencies, etc.
+│   server.py: The main script for roboserver.
+│
+└───serv
+│   │   buoy.py: The class connecting to a RobotX buoy for status.
+│   │   pinger.py: The class connecting to the shared RoboBoat/RoboSub/RobotX pinger for status.
+|   |   sevenseg.py: The class connecting to a RobotX buoy for status.
+|   |   timeutil.py: A set of time-related utility functions.
 ```
