@@ -18,22 +18,6 @@ import optparse
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(name)s - %(message)s')
 logger = logging.getLogger("roboserver")
 
-ALPHA_NAME = "alpha"
-BRAVO_NAME = "bravo"
-CHARLIE_NAME = "charlie"
-
-ALPHA_PINGER_IP = "192.168.1.5"
-BRAVO_PINGER_IP = "192.168.1.6"
-CHARLIE_PINGER_IP = "192.168.1.7"
-
-ALPHA_SEVENSEG_IP = "192.168.1.10"
-BRAVO_SEVENSEG_IP = "192.168.1.12"
-CHARLIE_SEVENSEG_IP = "192.168.1.32"
-
-PINGER_PORT=4000
-SEVENSEG_PORT=9000
-NMEASERVER_PORT=9000
-
 # LOGS_PATH may need to change depending on where you are running this
 # file from
 LOGS_PATH = 'logs/'
@@ -45,10 +29,10 @@ HTML_HEADER = '<head><title>' + COMPETITION + '</title>' + \
 timeutil = timeutil.TimeUtil(pytz.timezone('US/Eastern'))
 
 #initialize with default settings.  course parameter will change network settings.
-ping = pinger.Pinger('', PINGER_PORT, LOGS_PATH, timeutil, 'pinger')
-sevenseg = sevenseg.SevenSeg('', SEVENSEG_PORT, LOGS_PATH, timeutil, 'sevenseg')
+ping = pinger.Pinger('', 4000, LOGS_PATH, timeutil, 'pinger')
+sevenseg = sevenseg.SevenSeg('', 4000, LOGS_PATH, timeutil, 'sevenseg')
 #buoy = buoy.Buoy('192.168.1.11', 4000, LOGS_PATH, timeutil, 'buoy')
-nmeaserver = server.NMEAServer('', NMEASERVER_PORT, error_sentence_id="TDERR")
+nmeaserver = server.NMEAServer('', 9000, error_sentence_id="TDERR")
 
 app = Flask(__name__, static_folder=WEB_PATH, template_folder=WEB_PATH)
 shutdown_flag = False
@@ -284,8 +268,6 @@ def jsonify():
 
 # Main method to run the RoboServer
 def main():
-
-
     parser = optparse.OptionParser()
     parser.add_option('-c', '--course_name',
                       action="store", dest="course_name",
@@ -294,6 +276,18 @@ def main():
 
     options, args = parser.parse_args()
     logger.info("Setting Pinger and Sevenseg with course settings:  " + str(options.course_name))
+
+    ALPHA_NAME = "alpha"
+    BRAVO_NAME = "bravo"
+    CHARLIE_NAME = "charlie"
+
+    ALPHA_PINGER_IP = "192.168.1.5"
+    BRAVO_PINGER_IP = "192.168.1.6"
+    CHARLIE_PINGER_IP = "192.168.1.7"
+
+    ALPHA_SEVENSEG_IP = "192.168.1.12"
+    BRAVO_SEVENSEG_IP = "192.168.1.22"
+    CHARLIE_SEVENSEG_IP = "192.168.1.32"
 
     if options.course_name == ALPHA_NAME:
         ping.pinger_ip = ALPHA_PINGER_IP
