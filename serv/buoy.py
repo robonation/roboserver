@@ -37,11 +37,13 @@ class Buoy(threading.Thread):
     def run(self):
         logger.info("BUOYlistener connecting to {}:{}".format( \
             self.buoy_ip, self.buoy_port))
+
+        sock = None
         while not self.shutdown_flag:
             if not self.Connected:
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(1)
+                    sock.settimeout(3)
                     sock.connect((self.buoy_ip, self.buoy_port))
                     self.Connected = True
                     logger.info('Buoy TCP connected.')

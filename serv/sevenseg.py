@@ -36,12 +36,14 @@ class SevenSeg(threading.Thread):
     def run(self):
         logger.info("SevenSeglistener connecting to {}:{}".format( \
             self.sevenseg_ip, self.sevenseg_port))
+
+        sock = None
         while not self.shutdown_flag:
             if not self.Connected:
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(1)
-                    sock.connect((self.sevenseg_port, self.sevenseg_port))
+                    sock.settimeout(8)
+                    sock.connect((self.sevenseg_ip, self.sevenseg_port))
                     self.Connected = True
                     logger.info('SevenSeg TCP connected.')
                 except BaseException:
