@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 install_require = [
     'flask',
-    'nmeaserver>=0.1.9',
+    'nmeaserver>=0.1.10',
     'pycodestyle',
     'pytz',
 ]
