@@ -12,6 +12,8 @@ from nmeaserver import server, formatter
 from serv import timeutil, pinger, buoy, sevenseg
 from datetime import date
 import traceback
+import json
+from threading import RLock
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(name)s - %(message)s')
 logger = logging.getLogger("roboserver")
@@ -31,11 +33,14 @@ sevenseg = sevenseg.SevenSeg('192.168.1.7', 9000, LOGS_PATH, timeutil, 'sevenseg
 nmeaserver = server.NMEAServer('', 9000, error_sentence_id="TDERR")
 app = Flask(__name__, static_folder=WEB_PATH, template_folder=WEB_PATH)
 shutdown_flag = False
+team_dict = {}
+team_dict_lock = RLock()
 
 # The following object holds all information for a team's run
 
 
 class Team():
+    team_lock = RLock()
     name = None
     date = 0
     hbdate = 0
@@ -51,58 +56,61 @@ class Team():
 
     # Heartbeat message parsing and story log
     def HRB(self, message, logfile):
-        self.hbdate = message[0]
-        self.hbtime = message[1]
-        self.lat = message[2]
-        self.NS = message[3]
-        self.lon = message[4]
-        self.EW = message[5]
-        # write out to story log on mode change
-        if self.mode != message[7]:
-            if message[7] == '2':
-                # write out to story log
-                logger.info(self.name + ' vehicle in Auto')
+        with self.team_lock:
+            self.hbdate = message[0]
+            self.hbtime = message[1]
+            self.lat = message[2]
+            self.NS = message[3]
+            self.lon = message[4]
+            self.EW = message[5]
+            # write out to story log on mode change
+            if self.mode != message[7]:
+                if message[7] == '2':
+                    # write out to story log
+                    logger.info(self.name + ' vehicle in Auto')
 
-                log = 'vehicle is autonomous. Run started.\n'
-                if ping.Connected:
-                    log += 'Field {} pinger {} active.\n'.format(
-                        ping.Field, ping.Active)
-                else:
-                    log += 'Pinger not connected.'
-                if sevenseg.Connected:
-                    log += 'Field {} SevenSeg at {}.\n'.format(
-                        sevenseg.Field, sevenseg.State)
-                else:
-                    log += 'Light buoy not connected.'
+                    log = 'vehicle is autonomous. Run started.\n'
+                    if ping.Connected:
+                        log += 'Field {} pinger {} active.\n'.format(
+                            ping.Field, ping.Active)
+                    else:
+                        log += 'Pinger not connected.'
+                    if sevenseg.Connected:
+                        log += 'Field {} SevenSeg at {}.\n'.format(
+                            sevenseg.Field, sevenseg.State)
+                    else:
+                        log += 'Light buoy not connected.'
 
-                self.print_log(log, logfile)
-            elif message[7] == '1':
-                logger.info(self.name + 'vehicle is in manual mode. run ended.\n\n')
-                self.print_log(
-                    'vehicle is in manual mode. run ended.\n', logfile)
-        self.mode = message[7]
+                    self.print_log(log, logfile)
+                elif message[7] == '1':
+                    logger.info(self.name + 'vehicle is in manual mode. run ended.\n\n')
+                    self.print_log(
+                        'vehicle is in manual mode. run ended.\n', logfile)
+            self.mode = message[7]
 
     # Raise The Flag message parsing and story log
     def FLG(self, message, logfile):
-        self.date = message[0]
-        self.time = message[1]
-        self.flag = message[3]
-        self.print_log(
-            'reports Raise The Flag number: ' +
-            self.flag +
-            '.\n',
-            logfile)
+        with self.team_lock:
+            self.date = message[0]
+            self.time = message[1]
+            self.flag = message[3]
+            self.print_log(
+                'reports Raise The Flag number: ' +
+                self.flag +
+                '.\n',
+                logfile)
 
     # Docking message parsing and story log
     def DOK(self, message, logfile):
-        self.date = message[0]
-        self.time = message[1]
-        self.dock = message[3]
-        self.print_log(
-            'reports Automated Docking in: ' +
-            self.dock +
-            '.\n',
-            logfile)
+        with self.team_lock:
+            self.date = message[0]
+            self.time = message[1]
+            self.dock = message[3]
+            self.print_log(
+                'reports Automated Docking in: ' +
+                self.dock +
+                '.\n',
+                logfile)
 
     # Write out to story log
     def print_log(self, message, logfile):
@@ -111,6 +119,16 @@ class Team():
                           '\n' + self.name + ' ' + message)
         except BaseException:
             logger.error('no story log file created.')
+
+    def to_dict(self):
+        dict = {}
+        with self.team_lock:
+            dict = self.__dict__
+        try:
+            del dict["team_lock"]
+        except KeyError:
+            logger.debug("Key 'team_lock' not found")
+        return dict
 
 @nmeaserver.context_creator()
 def onConnectionEstablished(context):
@@ -133,7 +151,9 @@ def onEveryMessageBeforeHandler(context, raw_message):
         else:
             logger.debug("Received unknown sentence_id in onEveryMessageBeforeHandler()")
             return raw_message
-            
+        
+        with team_dict_lock:
+            team_dict[team.name] = team
         log_folder = LOGS_PATH + str(date.today()) + '/' + team.name
         context['logfile'] = open(log_folder + '_STORY.txt', 'a')
         context['rawlog'] = open(log_folder + '_RAW.txt', 'a')
@@ -186,19 +206,19 @@ def onEveryMessageAfterHandler(context, message, response):
 @nmeaserver.message('RBHRB')
 def heartbeat_handler(context, message):
     context['team'].HRB(message['data'], context['logfile'])
-    return formatter.format("TDHRB,{},Success".format(timeutil.rn_timestamp()))
+    return formatter.format("TDHRB,{},Success".format(timeutil.nmea_timestamp()))
 
 
 @nmeaserver.message('RBDOK')
 def automated_docking_handler(context, message):
     context['team'].DOK(message['data'], context['logfile'])
-    return formatter.format("TDDOK,{},Success".format(timeutil.rn_timestamp()))
+    return formatter.format("TDDOK,{},Success".format(timeutil.nmea_timestamp()))
 
 
 @nmeaserver.message('RBFLG')
 def raise_the_flag_handler(context, message):
     context['team'].FLG(message['data'], context['logfile'])
-    return formatter.format("TDFLG,{},Success".format(timeutil.rn_timestamp()))
+    return formatter.format("TDFLG,{},Success".format(timeutil.nmea_timestamp()))
 
 
 @nmeaserver.error()
@@ -234,6 +254,14 @@ def teams():
 @app.route('/team/<teamname>/', strict_slashes=False)  
 def team(teamname):
     return send_from_directory(WEB_PATH, teamname+'/index.html')
+
+@app.route('/status/', strict_slashes=False)  
+def jsonify():
+    temp = {}
+    with team_dict_lock:
+        for key, value in team_dict.iteritems():
+            temp[key] = value.to_dict()
+    return json.dumps(temp)
 
 # Main method to run the RoboServer
 def main():
