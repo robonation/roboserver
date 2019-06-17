@@ -124,14 +124,14 @@ class Team():
             logger.error('no story log file created.')
 
     def to_dict(self):
-        dict = {}
+        tmp = {}
         with self.team_lock:
-            dict = self.__dict__
+            tmp = self.__dict__
         try:
-            del dict["team_lock"]
+            del tmp["team_lock"]
         except KeyError:
             logger.debug("Key 'team_lock' not found")
-        return dict
+        return tmp
 
 @nmeaserver.context_creator()
 def onConnectionEstablished(context):
