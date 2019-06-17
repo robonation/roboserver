@@ -25,13 +25,13 @@ class Pinger(threading.Thread):
     shutdown_flag = False
     pinger_ip = None
     pinger_port = None
-    log_path = None
+    logs_path = None
     timeutil = None
 
-    def __init__(self, ip, port, log_path, timeutil, name="Pinger", daemon=True):
+    def __init__(self, ip, port, logs_path, timeutil, name="Pinger", daemon=True):
         self.pinger_ip = ip
         self.pinger_port = port
-        self.log_path = log_path
+        self.logs_path = logs_path
         self.timeutil = timeutil
         self.Time = timeutil.aslocaltimestr(datetime.utcnow())
         threading.Thread.__init__(self, name=name)
@@ -41,15 +41,17 @@ class Pinger(threading.Thread):
     def run(self):
         logger.info("Pinglistener connecting to {}:{}".format( \
             self.pinger_ip, self.pinger_port))
+
+        sock = None
         while not self.shutdown_flag:
             # try to connect to the pinger box
             if not self.Connected:
                 try:
                     # create a new socket and try to connect
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(1)
+                    sock.settimeout(3)
                     sock.connect((self.pinger_ip, self.pinger_port))
-                    print('Pinger TCP connected')
+                    logger.info('Pinger TCP connected')
                     self.Connected = True
                 except BaseException:
                     # if it doesn't work, try again in two seconds
@@ -58,7 +60,6 @@ class Pinger(threading.Thread):
             else:
                 try:
                     response = sock.recv(1024)
-                    # print response, 'received from', addr
                     message = formatter.parse(response)
                     # update the field docs with buoy and pinger info.
                     name = message['sentence_type']
@@ -91,8 +92,11 @@ class Pinger(threading.Thread):
                         with open(log_file, 'a') as f:
                             f.write(str(self.Time) + ' | ' + response)
                 except BaseException:
-                    print('Pinger TCP disconnected')
+                    logger.exception("Exc:")
+                    logger.error('Pinger TCP disconnected')
+                    time.sleep(2)
                     sock.close()
+                    self.Connected = False
 
     def shutdown(self):
         self.shutdown_flag = True
