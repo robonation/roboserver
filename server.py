@@ -300,6 +300,9 @@ def main():
     elif options.course_name == CHARLIE_NAME:
         ping.pinger_ip = CHARLIE_PINGER_IP
         sevenseg.sevenseg_ip = CHARLIE_SEVENSEG_IP
+    else:
+        logger.error("Course name provided is not expected.  See '--help' for course name examples.")
+        exit(1)
 
     logger.info("Pinger ip:  " + str(ping.pinger_ip))
     logger.info("Sevenseg ip:  " + str(sevenseg.sevenseg_ip))
