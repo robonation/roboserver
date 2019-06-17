@@ -191,10 +191,12 @@ def onEveryMessageAfterHandler(context, message, response):
 
     html_log = open(html_path, 'w')
     html_log.write(
-        "{}Team {}<br /> Last heartbeat timestamp: {}<br /> Last \"Automated" + \
-        " Docking\" reported: {}<br /> Last \"Raise The Flag\" reported: {}" + \
-        "<br /> Last raw message: {}".format(
-            HTML_HEADER,
+        """{}Team {}<br /> 
+        Last heartbeat timestamp: {}<br />
+        Last \"Automated Docking\" reported: {}<br /> 
+        Last \"Raise The Flag\" reported: {}
+        <br /> Last raw message: {}""".format(
+            HTML_HEADER, 
             str(team.name),
             team.hbtime,
             team.dock,
