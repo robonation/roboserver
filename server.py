@@ -11,12 +11,28 @@ from flask import Flask, render_template, send_from_directory
 from nmeaserver import server, formatter
 from serv import timeutil, pinger, buoy, sevenseg
 from datetime import date
-import traceback
 import json
 from threading import RLock
+import optparse
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(name)s - %(message)s')
 logger = logging.getLogger("roboserver")
+
+ALPHA_NAME = "alpha"
+BRAVO_NAME = "bravo"
+CHARLIE_NAME = "charlie"
+
+ALPHA_PINGER_IP = "192.168.1.5"
+BRAVO_PINGER_IP = "192.168.1.6"
+CHARLIE_PINGER_IP = "192.168.1.7"
+
+ALPHA_SEVENSEG_IP = "192.168.1.10"
+BRAVO_SEVENSEG_IP = "192.168.1.12"
+CHARLIE_SEVENSEG_IP = "192.168.1.32"
+
+PINGER_PORT=4000
+SEVENSEG_PORT=9000
+NMEASERVER_PORT=9000
 
 # LOGS_PATH may need to change depending on where you are running this
 # file from
@@ -27,10 +43,13 @@ HTML_HEADER = '<head><title>' + COMPETITION + '</title>' + \
                 '<meta http-equiv="refresh" content="5" ></head>'
 
 timeutil = timeutil.TimeUtil(pytz.timezone('US/Eastern'))
-ping = pinger.Pinger('192.168.1.6', 4000, LOGS_PATH, timeutil, 'pinger')
-sevenseg = sevenseg.SevenSeg('192.168.1.7', 9000, LOGS_PATH, timeutil, 'sevenseg')
+
+#initialize with default settings.  course parameter will change network settings.
+ping = pinger.Pinger('', PINGER_PORT, LOGS_PATH, timeutil, 'pinger')
+sevenseg = sevenseg.SevenSeg('', SEVENSEG_PORT, LOGS_PATH, timeutil, 'sevenseg')
 #buoy = buoy.Buoy('192.168.1.11', 4000, LOGS_PATH, timeutil, 'buoy')
-nmeaserver = server.NMEAServer('', 9000, error_sentence_id="TDERR")
+nmeaserver = server.NMEAServer('', NMEASERVER_PORT, error_sentence_id="TDERR")
+
 app = Flask(__name__, static_folder=WEB_PATH, template_folder=WEB_PATH)
 shutdown_flag = False
 team_dict = {}
@@ -265,6 +284,30 @@ def jsonify():
 
 # Main method to run the RoboServer
 def main():
+
+
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--course_name',
+                      action="store", dest="course_name",
+                      help="Initializes network settings based on course names.  \
+                        Course Name examples:  alpha, bravo, charlie ", default="alpha")
+
+    options, args = parser.parse_args()
+    logger.info("Setting Pinger and Sevenseg with course settings:  " + str(options.course_name))
+
+    if options.course_name == ALPHA_NAME:
+        ping.pinger_ip = ALPHA_PINGER_IP
+        sevenseg.sevenseg_ip = ALPHA_SEVENSEG_IP
+    elif options.course_name == BRAVO_NAME:
+        ping.pinger_ip = BRAVO_PINGER_IP
+        sevenseg.sevenseg_ip = BRAVO_SEVENSEG_IP
+    elif options.course_name == CHARLIE_NAME:
+        ping.pinger_ip = CHARLIE_PINGER_IP
+        sevenseg.sevenseg_ip = CHARLIE_SEVENSEG_IP
+
+    logger.info("Pinger ip:  " + str(ping.pinger_ip))
+    logger.info("Sevenseg ip:  " + str(sevenseg.sevenseg_ip))
+
     # if today's folder hasn't been created, create it
     try:
         log_dir = LOGS_PATH + str(date.today())
@@ -288,6 +331,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def shutdown():
+    global shutdown_flag
     shutdown_flag = True
     logger.warn("Server going down")
     sevenseg.shutdown()
@@ -296,6 +340,7 @@ def shutdown():
     sys.exit(0)
 
 if __name__ == '__main__':
+
     main()
 
     while not shutdown_flag:
