@@ -27,8 +27,8 @@ HTML_HEADER = '<head><title>' + COMPETITION + '</title>' + \
                 '<meta http-equiv="refresh" content="5" ></head>'
 
 timeutil = timeutil.TimeUtil(pytz.timezone('US/Eastern'))
-ping = pinger.Pinger('192.168.1.6', 4000, LOGS_PATH, timeutil, 'pinger')
-sevenseg = sevenseg.SevenSeg('192.168.1.7', 9000, LOGS_PATH, timeutil, 'sevenseg')
+ping = pinger.Pinger('192.168.1.5', 4000, LOGS_PATH, timeutil, 'pinger')
+sevenseg = sevenseg.SevenSeg('192.168.1.12', 4000, LOGS_PATH, timeutil, 'sevenseg')
 #buoy = buoy.Buoy('192.168.1.11', 4000, LOGS_PATH, timeutil, 'buoy')
 nmeaserver = server.NMEAServer('', 9000, error_sentence_id="TDERR")
 app = Flask(__name__, static_folder=WEB_PATH, template_folder=WEB_PATH)
@@ -188,10 +188,12 @@ def onEveryMessageAfterHandler(context, message, response):
 
     html_log = open(html_path, 'w')
     html_log.write(
-        "{}Team {}<br /> Last heartbeat timestamp: {}<br /> Last \"Automated" + \
-        " Docking\" reported: {}<br /> Last \"Raise The Flag\" reported: {}" + \
-        "<br /> Last raw message: {}".format(
-            HTML_HEADER,
+        """{}Team {}<br /> 
+        Last heartbeat timestamp: {}<br />
+        Last \"Automated Docking\" reported: {}<br /> 
+        Last \"Raise The Flag\" reported: {}
+        <br /> Last raw message: {}""".format(
+            HTML_HEADER, 
             str(team.name),
             team.hbtime,
             team.dock,
