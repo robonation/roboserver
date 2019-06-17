@@ -53,6 +53,7 @@ class Team():
     mode = '1'
     dock = ''
     flag = ''
+    timestamp = ''
 
     # Heartbeat message parsing and story log
     def HRB(self, message, logfile):
@@ -189,13 +190,15 @@ def onEveryMessageAfterHandler(context, message, response):
     html_log = open(html_path, 'w')
     html_log.write(
         """{}Team {}<br /> 
-        Last heartbeat timestamp: {}<br />
+        Last reported heartbeat timestamp: {}<br />
+        Last received heartbeat timestamp: {}<br />
         Last \"Automated Docking\" reported: {}<br /> 
         Last \"Raise The Flag\" reported: {}
         <br /> Last raw message: {}""".format(
             HTML_HEADER, 
             str(team.name),
-            team.hbtime,
+            timeutil.log_timestamp(team.hbdate, team.hbtime),
+            timeutil.log_timestamp(team.hbdate, team.hbtime),
             team.dock,
             team.flag,
             message['sentence']))
