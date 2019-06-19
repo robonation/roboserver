@@ -30,7 +30,7 @@ class Buoy(threading.Thread):
         self.buoy_port = port
         self.logs_path = logs_path
         self.timeutil = timeutil
-        self.Time = timeutil.aslocaltimestr(datetime.utcnow())
+        self.Time = self.timeutil.rn_timestamp()
         threading.Thread.__init__(self, name=name)
         self.setDaemon(daemon)
 

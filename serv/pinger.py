@@ -33,7 +33,7 @@ class Pinger(threading.Thread):
         self.pinger_port = port
         self.logs_path = logs_path
         self.timeutil = timeutil
-        self.Time = timeutil.aslocaltimestr(datetime.utcnow())
+        self.Time = self.timeutil.rn_timestamp()
         threading.Thread.__init__(self, name=name)
         self.setDaemon(daemon)
 
@@ -72,8 +72,7 @@ class Pinger(threading.Thread):
                         # print 'Pinger Sync Mode:', self.Sync
                         self.Voltage = float(message['data'][3]) / 1000
                         # print 'Pinger voltage:', self.Voltage
-                        self.Time = self.timeutil.aslocaltimestr(
-                            datetime.utcnow())
+                        self.Time = self.timeutil.rn_timestamp()
                         # print 'Time:', str(self.Time)
                         folder = 'Field_' + str(message['data'][0])
 
