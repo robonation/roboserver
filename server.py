@@ -150,7 +150,7 @@ def onEveryMessageBeforeHandler(context, raw_message):
 
         if message['sentence_id'] == 'RBHRB':
             team.name = message['data'][6]
-        elif message['sentence'] == 'RBDOK' or message['sentence'] == 'RBFLG':
+        elif message['sentence_id'] == 'RBDOK' or message['sentence_id'] == 'RBFLG':
             team.name = message['data'][2]
         else:
             logger.debug("Received unknown sentence_id in onEveryMessageBeforeHandler()")
